@@ -29,14 +29,11 @@ def deriveBag(primary, secondary, algo):
 
 def generateVideoFromSeed(writer, f, p):
     vs = ffms.VideoSource(f)
-    vs.set_output_format([ffms.get_pix_fmt('bgra')])
+    vs.set_output_format([ffms.get_pix_fmt('bgr24')])
     numFramesInSource = len(vs.track.frame_info_list)
     numFramesToGrab = int(p * numFramesInSource)
     for i in range(numFramesToGrab):
-        frame = vs.get_frame(random.randrange(0, numFramesInSource)).planes[0]
-        # format for opencv for video writing
-        # (strip alpha values [SLOW - is there better pix_fmt?] and reshape)
-        image = [frame[j] for j in range(len(frame)) if (j + 1) % 4 != 0]
-        image = np.reshape(image, (frame.EncodedHeight, frame.EncodedWidth, 3))
+        frame = vs.get_frame(random.randrange(0, numFramesInSource))
+        frame = np.reshape(frame.planes[0], (frame.EncodedHeight, frame.EncodedWidth, 3))
         # TODO: apply transform/filter to image
-        writer.write(image)
+        writer.write(frame)
