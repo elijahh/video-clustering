@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 def kmeansCluster(k, algo, fileList):
     data = []
     for video in fileList:
+        print "Processing {0}".format(video)
         data += [processVideo(video, algo)]
     vectorizer = TfidfVectorizer()
     tfidf = vectorizer.fit_transform(data)
